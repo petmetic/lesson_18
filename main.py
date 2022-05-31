@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 
 db_url = os.getenv("DATABASE_URL", "sqlite:///db.sqlite").replace("postgres://", "postgresql://", 1)
-
+db = SQLAlchemy(db_url)
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
