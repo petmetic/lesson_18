@@ -1,7 +1,9 @@
-import os
 
 from flask import Flask, render_template, request, redirect
 from sqla_wrapper import SQLAlchemy
+import os
+from sqlalchemy_pagination import paginate
+
 
 app = Flask(__name__)
 
