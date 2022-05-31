@@ -1,11 +1,13 @@
+import os
+
 from flask import Flask, render_template, request, redirect
 from sqla_wrapper import SQLAlchemy
-import os
 
 app = Flask(__name__)
 
 db_url = os.getenv("DATABASE_URL", "sqlite:///db.sqlite").replace("postgres://", "postgresql://", 1)
 db = SQLAlchemy(db_url)
+
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -16,11 +18,17 @@ class Message(db.Model):
 db.create_all()
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
-    messages = db.query(Message).all()
+    page = request.args.get("page")
 
-    print(messages)
+    if not page:
+        page = 1
+
+    messages_query = db.query(Message)
+
+    messages = paginate(query=messages_query, page=int(page), page_size=5)
+
     return render_template("index.html", messages=messages)
 
 
